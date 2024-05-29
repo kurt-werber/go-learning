@@ -34,7 +34,7 @@ func printSlice(s []int) {
 	fmt.Println(s)
 }
 
-func oldCrap() {
+func oldStuff() {
 	fmt.Println("Hello world!")
 	Sqrt(2)
 	fmt.Println(abs(-5))
@@ -50,7 +50,7 @@ func oldCrap() {
 	case today + 1:
 		fmt.Println("Almost")
 	default:
-		fmt.Println("shit")
+		fmt.Println("dang")
 	}
 	defer fmt.Println("sorry I'm late")
 	defer fmt.Println("I'm later but I cheated")

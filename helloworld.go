@@ -9,8 +9,23 @@ import (
 )
 
 type Vertex struct {
-	X int
-	Y int
+	X float64
+	Y float64
+}
+
+// has a receiver arg, therefore is a method
+func (v Vertex) Abs() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y)
+}
+
+// nonstruct types can also have methods
+type MyFloat float64
+
+func (f MyFloat) Abs() float64 {
+	if f < 0 {
+		return float64(-f)
+	}
+	return float64(f)
 }
 
 const (
@@ -21,10 +36,10 @@ const (
 var m map[string]Vertex
 
 func main() {
-	f := fibonacci()
-	for i := 0; i < 10; i++ {
-		fmt.Println(f())
-	}
+	v := Vertex{3, 4}
+	fmt.Println(v.Abs())
+	f := MyFloat(-math.Sqrt2)
+	fmt.Println(f.Abs())
 }
 
 func fibonacci() func() int {
@@ -135,4 +150,9 @@ func oldStuff() {
 	fmt.Println(hypot(5, 12))
 	fmt.Println(compute(hypot))
 	fmt.Println(compute(math.Pow))
+
+	f := fibonacci()
+	for i := 0; i < 10; i++ {
+		fmt.Println(f())
+	}
 }

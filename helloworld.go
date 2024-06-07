@@ -28,6 +28,13 @@ func (f MyFloat) Abs() float64 {
 	return float64(f)
 }
 
+// pointer receivers can be used to modify the value the pointer points to
+// pointer receivers better most of the time
+func (v *Vertex) Scale(f float64) {
+	v.X = v.X * f
+	v.Y = v.Y * f
+}
+
 const (
 	google    = "google"
 	bell_labs = "bell labs"
@@ -40,6 +47,8 @@ func main() {
 	fmt.Println(v.Abs())
 	f := MyFloat(-math.Sqrt2)
 	fmt.Println(f.Abs())
+	v.Scale(3)
+	fmt.Println(v)
 }
 
 func fibonacci() func() int {

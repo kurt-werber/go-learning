@@ -13,6 +13,12 @@ type Vertex struct {
 	Y float64
 }
 
+type IPAddr [4]byte
+
+func (ipaddr IPAddr) String() string {
+	return fmt.Sprintf("%d.%d.%d.%d", ipaddr[0], ipaddr[1], ipaddr[2], ipaddr[3])
+}
+
 // has a receiver arg, therefore is a method
 func (v Vertex) Abs() float64 {
 	return math.Sqrt(v.X*v.X + v.Y*v.Y)
@@ -49,6 +55,30 @@ func main() {
 	fmt.Println(f.Abs())
 	v.Scale(3)
 	fmt.Println(v)
+	//type assertion provides access to interface value's underlying concrete value
+	var i interface{} = "hello"
+	s := i.(string)
+	fmt.Println(s)
+	u, ok := i.(float64) //would fail without ok variable because type assertion fails
+	fmt.Println(u, ok)
+	hosts := map[string]IPAddr{
+		"loopback":  {127, 0, 0, 1},
+		"googleDNS": {8, 8, 8, 8},
+	}
+	for name, ip := range hosts {
+		fmt.Printf("%v: %v\n", name, ip) //by adding String() method to IPAddr, fmt can convert to string (it now implements Stringer interface)
+	}
+}
+
+func doSomething(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("%d is an int\n", v)
+	case string:
+		fmt.Printf("%q is a string\n", v)
+	default:
+		fmt.Println("something else")
+	}
 }
 
 func fibonacci() func() int {

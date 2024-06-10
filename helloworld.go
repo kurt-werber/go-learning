@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"runtime"
 	"strings"
@@ -11,6 +12,23 @@ import (
 type Vertex struct {
 	X float64
 	Y float64
+}
+
+type MyError struct {
+	When time.Time
+	What string
+}
+
+func (e *MyError) Error() string { //error is a built in interface containing Error()
+	return fmt.Sprintf("at %v, %s",
+		e.When, e.What)
+}
+
+func run() error {
+	return &MyError{
+		time.Now(),
+		"it didn't work",
+	}
 }
 
 type IPAddr [4]byte
@@ -49,24 +67,16 @@ const (
 var m map[string]Vertex
 
 func main() {
-	v := Vertex{3, 4}
-	fmt.Println(v.Abs())
-	f := MyFloat(-math.Sqrt2)
-	fmt.Println(f.Abs())
-	v.Scale(3)
-	fmt.Println(v)
-	//type assertion provides access to interface value's underlying concrete value
-	var i interface{} = "hello"
-	s := i.(string)
-	fmt.Println(s)
-	u, ok := i.(float64) //would fail without ok variable because type assertion fails
-	fmt.Println(u, ok)
-	hosts := map[string]IPAddr{
-		"loopback":  {127, 0, 0, 1},
-		"googleDNS": {8, 8, 8, 8},
-	}
-	for name, ip := range hosts {
-		fmt.Printf("%v: %v\n", name, ip) //by adding String() method to IPAddr, fmt can convert to string (it now implements Stringer interface)
+	r := strings.NewReader("Hello, Reader!")
+	b := make([]byte, 8)
+
+	for {
+		n, err := r.Read(b)
+		fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+		fmt.Printf("b[:n] = %q\n", b[:n])
+		if err == io.EOF {
+			break
+		}
 	}
 }
 
@@ -194,4 +204,29 @@ func oldStuff() {
 	for i := 0; i < 10; i++ {
 		fmt.Println(f())
 	}
+
+	ver := Vertex{3, 4}
+	fmt.Println(v.Abs())
+	myF := MyFloat(-math.Sqrt2)
+	fmt.Println(myF.Abs())
+	ver.Scale(3)
+	fmt.Println(v)
+	//type assertion provides access to interface value's underlying concrete value
+	var inter interface{} = "hello"
+	s := inter.(string)
+	fmt.Println(s)
+	u, ok := inter.(float64) //would fail without ok variable because type assertion fails
+	fmt.Println(u, ok)
+	hosts := map[string]IPAddr{
+		"loopback":  {127, 0, 0, 1},
+		"googleDNS": {8, 8, 8, 8},
+	}
+	for name, ip := range hosts {
+		fmt.Printf("%v: %v\n", name, ip) //by adding String() method to IPAddr, fmt can convert to string (it now implements Stringer interface)
+	}
+	if err := run(); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(Sqrt(2))
+	fmt.Println(Sqrt(-2))
 }
